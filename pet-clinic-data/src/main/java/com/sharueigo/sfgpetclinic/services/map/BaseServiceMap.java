@@ -3,10 +3,7 @@ package com.sharueigo.sfgpetclinic.services.map;
 import com.sharueigo.sfgpetclinic.model.BaseEntity;
 import com.sharueigo.sfgpetclinic.services.CrudService;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BaseServiceMap<T extends BaseEntity> implements CrudService<T> {
 
@@ -19,7 +16,12 @@ public class BaseServiceMap<T extends BaseEntity> implements CrudService<T> {
 
     @Override
     public T save(T object){
-        map.put(object.getId(),object);
+        if(object != null){
+            object.setId(nextId());
+            map.put(object.getId(),object);
+        } else {
+            throw new RuntimeException("Can't save null object");
+        }
         return object;
     }
 
@@ -36,6 +38,14 @@ public class BaseServiceMap<T extends BaseEntity> implements CrudService<T> {
     @Override
     public void deleteById(Long id){
         map.remove(id);
+    }
+
+    private Long nextId(){
+        if(map.isEmpty()){
+            return 1L;
+        } else {
+            return (Collections.max(map.keySet()) + 1);
+        }
     }
 
 }
