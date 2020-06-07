@@ -1,34 +1,21 @@
 package com.sharueigo.sfgpetclinic.services.map;
 
 import com.sharueigo.sfgpetclinic.model.Owner;
-import com.sharueigo.sfgpetclinic.services.CrudService;
+import com.sharueigo.sfgpetclinic.services.OwnerService;
 
-import java.util.Set;
+import java.util.Map;
 
-public class OwnerServiceMap extends AbstractMapService<Owner,Long> implements CrudService<Owner,Long> {
-
-    @Override
-    public Set<Owner> findAll() {
-        return super.findAll();
-    }
+public class OwnerServiceMap extends BaseServiceMap<Owner> implements OwnerService {
 
     @Override
-    public Owner findById(Long id) {
-        return super.findById(id);
+    public Owner findByLastName(String lastName){
+        for(Map.Entry<Long,Owner> entry : this.map.entrySet()){
+            if(entry.getValue().getLastName().equalsIgnoreCase(lastName)){
+                return entry.getValue();
+            }
+        }
+        //not found
+        return null;
     }
 
-    @Override
-    public void delete(Owner object) {
-        super.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        super.deleteById(id);
-    }
-
-    @Override
-    public Owner save(Owner object) {
-        return super.save(object.getId(),object);
-    }
 }
