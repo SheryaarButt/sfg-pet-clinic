@@ -1,9 +1,6 @@
 package com.sharueigo.sfgpetclinic.model;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +13,9 @@ public class Owner extends Person {
     private String city;
     private String telephone;
 
-    @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
     private Set<Pet> pets = new HashSet<>();
 
     public String getAddress() {
