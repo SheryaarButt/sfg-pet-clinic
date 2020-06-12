@@ -5,5 +5,5 @@ import com.sharueigo.sfgpetclinic.services.PetTypeService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PetTypeServiceMap extends BaseServiceMap<PetType> implements PetTypeService {
+public class PetTypeServiceMap extends CrudServiceMap<PetType> implements PetTypeService {
 }

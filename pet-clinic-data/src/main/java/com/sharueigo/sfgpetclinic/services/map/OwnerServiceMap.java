@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class OwnerServiceMap extends BaseServiceMap<Owner> implements OwnerService {
+public class OwnerServiceMap extends CrudServiceMap<Owner> implements OwnerService {
 
     private final PetService petService;
 

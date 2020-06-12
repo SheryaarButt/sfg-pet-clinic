@@ -5,7 +5,7 @@ import com.sharueigo.sfgpetclinic.services.CrudService;
 
 import java.util.*;
 
-public class BaseServiceMap<T extends BaseEntity> implements CrudService<T> {
+public abstract class CrudServiceMap<T extends BaseEntity> implements CrudService<T> {
 
     protected Map<Long,T> map = new HashMap<>();
 
