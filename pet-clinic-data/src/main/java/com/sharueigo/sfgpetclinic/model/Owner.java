@@ -50,6 +50,20 @@ public class Owner extends Person {
         this.pets = pets;
     }
 
+    public void addPet(Pet pet){
+        if(pet != null){
+            pet.setOwner(this);
+            pets.add(pet);
+        }
+    }
+
+    public void removePet(Pet pet){
+        if(pet != null){
+            pet.setOwner(null);
+            pets.remove(pet);
+        }
+    }
+
     @Override
     public String toString() {
         return "Owner{" +

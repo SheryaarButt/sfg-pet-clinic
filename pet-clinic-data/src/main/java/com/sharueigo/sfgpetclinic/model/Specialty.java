@@ -31,4 +31,5 @@ public class Specialty extends BaseEntity {
     public void setVets(Set<Vet> vets) {
         this.vets = vets;
     }
+
 }

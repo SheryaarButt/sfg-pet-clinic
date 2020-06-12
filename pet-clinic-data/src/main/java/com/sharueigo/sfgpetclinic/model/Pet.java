@@ -65,6 +65,20 @@ public class Pet extends BaseEntity{
         this.visits = visits;
     }
 
+    public void addVisit(Visit visit){
+        if(visit != null){
+            visit.setPet(this);
+            visits.add(visit);
+        }
+    }
+
+    public void removeVisit(Visit visit){
+        if(visit != null){
+            visit.setPet(null);
+            visits.remove(visit);
+        }
+    }
+
     @Override
     public String toString() {
         return "Pet{" +
