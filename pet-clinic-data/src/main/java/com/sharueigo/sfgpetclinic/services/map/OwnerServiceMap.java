@@ -6,8 +6,6 @@ import com.sharueigo.sfgpetclinic.services.PetService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service
 @Profile({"default","map"})
 public class OwnerServiceMap extends CrudServiceMap<Owner> implements OwnerService {
@@ -20,13 +18,11 @@ public class OwnerServiceMap extends CrudServiceMap<Owner> implements OwnerServi
 
     @Override
     public Owner findByLastName(String lastName){
-        for(Map.Entry<Long,Owner> entry : this.map.entrySet()){
-            if(entry.getValue().getLastName().equalsIgnoreCase(lastName)){
-                return entry.getValue();
-            }
-        }
-        //not found
-        return null;
+        return map.values()
+                    .stream()
+                    .filter(owner -> owner.getLastName().equalsIgnoreCase(lastName))
+                    .findFirst()
+                    .orElse(null);
     }
 
     @Override
