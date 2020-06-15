@@ -61,16 +61,16 @@ public class DataLoader implements CommandLineRunner {
         alexsPet.setBirthDate(LocalDate.now());
         fionasPet.setName("Spot");
         alexsPet.setName("Rosco");
-//        petService.save(fionasPet);
-//        petService.save(alexsPet);
 
-        Owner owner1 = new Owner();
-        owner1.setFirstName("Fiona");
-        owner1.setLastName("Apple");
-        owner1.setAddress("Kingsbridge rd");
-        owner1.setCity("Ellicott");
-        owner1.setTelephone("2134134");
-        owner1.getPets().add(fionasPet);
+        Owner owner1 = Owner.builder()
+                .firstName("Fiona")
+                .lastName("Apple")
+                .address("Kingsbridge rd")
+                .city("Ellicott")
+                .telephone("2134134")
+                .build();
+        owner1.addPet(fionasPet);
+
         ownerService.save(owner1);
 
         Owner owner2 = new Owner();
@@ -79,13 +79,10 @@ public class DataLoader implements CommandLineRunner {
         owner2.setAddress("super RD");
         owner2.setCity("Denver");
         owner2.setTelephone("8974568");
-        owner2.getPets().add(alexsPet);
+        owner2.addPet(alexsPet);
         ownerService.save(owner2);
 
-        Visit catVisit = new Visit();
-        catVisit.setPet(fionasPet);
-        catVisit.setDate(LocalDate.now());
-        catVisit.setDescription("Sneezing");
+        Visit catVisit = new Visit(LocalDate.now(),"Sneezing",fionasPet);
         visitService.save(catVisit);
 
         System.out.println("Loaded owners");
@@ -101,23 +98,34 @@ public class DataLoader implements CommandLineRunner {
         Specialty surgery = new Specialty();
         surgery.setDescription("Surgery");
 
-        specialtyService.save(radiology);
-        specialtyService.save(dentistry);
-        specialtyService.save(surgery);
-
         Vet vet1 = new Vet();
         vet1.setFirstName("Gregg");
         vet1.setLastName("Johnson");
         vet1.getSpecialties().add(dentistry);
         vet1.getSpecialties().add(radiology);
+
         vetService.save(vet1);
+
+        dentistry.getVets().add(vet1);
+        radiology.getVets().add(vet1);
 
         Vet vet2 = new Vet();
         vet2.setFirstName("Linda");
         vet2.setLastName("Yett");
         vet2.getSpecialties().add(radiology);
         vet2.getSpecialties().add(surgery);
+
         vetService.save(vet2);
+
+        radiology.getVets().add(vet2);
+        surgery.getVets().add(vet2);
+
+        specialtyService.save(radiology);
+        specialtyService.save(dentistry);
+        specialtyService.save(surgery);
+
+
+
 
         System.out.println("Loaded vets");
 

@@ -3,9 +3,11 @@ package com.sharueigo.sfgpetclinic.services.map;
 import com.sharueigo.sfgpetclinic.model.Visit;
 import com.sharueigo.sfgpetclinic.services.PetService;
 import com.sharueigo.sfgpetclinic.services.VisitService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile({"default","map"})
 public class VisitServiceMap extends CrudServiceMap<Visit> implements VisitService {
 
     private final PetService petService;
