@@ -6,6 +6,9 @@ import com.sharueigo.sfgpetclinic.services.PetService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @Profile({"default","map"})
 public class OwnerServiceMap extends CrudServiceMap<Owner> implements OwnerService {
@@ -41,7 +44,15 @@ public class OwnerServiceMap extends CrudServiceMap<Owner> implements OwnerServi
                 throw new RuntimeException("Owner requires pets");
             }
         }
+
         return super.save(owner);
     }
 
+    @Override
+    public Set<Owner> findByLastNameIgnoreCaseContaining(String lastName) {
+        return map.values()
+                .stream()
+                .filter(owner -> owner.getLastName().toLowerCase().matches(".*" + lastName.toLowerCase() + ".*"))
+                .collect(Collectors.toSet());
+    }
 }

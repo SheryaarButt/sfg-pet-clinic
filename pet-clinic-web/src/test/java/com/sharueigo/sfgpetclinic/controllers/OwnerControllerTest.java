@@ -9,8 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.HashSet;
@@ -18,6 +16,8 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerControllerTest {
@@ -49,21 +49,78 @@ class OwnerControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(ownerController).build();
     }
 
-    @Test
-    void listOwners() {
 
-        when(ownerService.findAll()).thenReturn(testOwners);
+    @Test
+    void findOwnersPage(){
 
         try{
-            mockMvc.perform(MockMvcRequestBuilders.get("/owners"))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.view().name("owners/index"))
-                    .andExpect(MockMvcResultMatchers.model().attribute("owners",testOwners));
-        } catch (Exception e){
+            mockMvc.perform(get("/owners/find"))
+                    .andExpect(view().name("owners/findOwners"))
+                    .andExpect(status().isOk())
+                    .andExpect(model().attributeExists("owner"));
+        } catch(Exception e){
             fail(e.getMessage());
         }
 
-        verify(ownerService,times(1)).findAll();
-
+        verifyNoInteractions(ownerService);
     }
+
+    @Test
+    void findOwnersActionMultiple(){
+
+        Owner testOwner1 = Owner.builder().id(1L).lastName("Briggs").build();
+        Owner testOwner2 = Owner.builder().id(2L).lastName("Tigg").build();
+        Set<Owner> owners = new HashSet<>();
+        owners.add(testOwner1);
+        owners.add(testOwner2);
+        when(ownerService.findByLastNameIgnoreCaseContaining(any())).thenReturn(owners);
+
+        try{
+            mockMvc.perform(get("/owners"))
+                    .andExpect(view().name("owners/ownersList"))
+                    .andExpect(status().isOk())
+                    .andExpect(model().attributeExists("selections"));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+
+        verify(ownerService,times(1)).findByLastNameIgnoreCaseContaining(any());
+    }
+
+    @Test
+    void findOwnersActionSingle(){
+
+        Owner testOwner1 = Owner.builder().id(1L).lastName("Briggs").build();
+        Set<Owner> owners = new HashSet<>();
+        owners.add(testOwner1);
+        when(ownerService.findByLastNameIgnoreCaseContaining(any())).thenReturn(owners);
+
+        try{
+            mockMvc.perform(get("/owners"))
+                    .andExpect(header().string("Location","/owners/1"))
+                    .andExpect(status().is3xxRedirection());
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+
+        verify(ownerService,times(1)).findByLastNameIgnoreCaseContaining(any());
+    }
+
+    @Test
+    void findOwnersActionNone(){
+
+        Set<Owner> owners = new HashSet<>();
+        when(ownerService.findByLastNameIgnoreCaseContaining(any())).thenReturn(owners);
+
+        try{
+            mockMvc.perform(get("/owners"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("owners/findOwners"));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+
+        verify(ownerService,times(1)).findByLastNameIgnoreCaseContaining(any());
+    }
+
 }

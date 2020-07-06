@@ -18,8 +18,6 @@ public class PetType extends BaseEntity{
 
     @Override
     public String toString() {
-        return "PetType{" +
-                "name='" + name + '\'' +
-                '}';
+        return name;
     }
 }
