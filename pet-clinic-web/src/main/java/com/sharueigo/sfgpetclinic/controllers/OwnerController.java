@@ -5,10 +5,7 @@ import com.sharueigo.sfgpetclinic.services.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Set;
@@ -54,4 +51,30 @@ public class OwnerController {
             return new ModelAndView("owners/ownersList").addObject("selections",foundOwners);
         }
     }
+
+    @GetMapping("/new")
+    public ModelAndView addOwnerForm(){
+        return new ModelAndView("owners/createOrUpdateOwnerForm").addObject("owner",new Owner());
+    }
+
+    @GetMapping("/{ownerId:[1-9]\\d*}/edit")
+    public ModelAndView updateOwnerForm(@PathVariable Long ownerId){
+        Owner foundOwner = ownerService.findById(ownerId);
+        if(foundOwner != null){
+            return new ModelAndView("owners/createOrUpdateOwnerForm").addObject("owner",foundOwner);
+        } else{
+            return new ModelAndView("redirect:/owners/new");
+        }
+    }
+
+    @PostMapping
+    public ModelAndView addOrUpdateOwnerAction(Owner owner){
+        if(owner == null){
+            return new ModelAndView("redirect:/owners/new");
+        }
+        return new ModelAndView("redirect:/owners/" + ownerService.save(owner).getId());
+    }
+
+
+
 }

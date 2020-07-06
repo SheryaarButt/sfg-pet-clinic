@@ -8,7 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.HashSet;
@@ -122,5 +124,92 @@ class OwnerControllerTest {
 
         verify(ownerService,times(1)).findByLastNameIgnoreCaseContaining(any());
     }
+
+    @Test
+    void addOwnerForm(){
+
+        try{
+            mockMvc.perform(get("/owners/new"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("owners/createOrUpdateOwnerForm"))
+                    .andExpect(model().attributeExists("owner"));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+        verify(ownerService,times(0)).findById(any());
+    }
+
+    @Test
+    void updateOwnerForm(){
+
+        Owner testOwner = Owner.builder().id(2L).build();
+        when(ownerService.findById(2L)).thenReturn(testOwner);
+
+        try{
+            mockMvc.perform(get("/owners/2/edit"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("owners/createOrUpdateOwnerForm"))
+                    .andExpect(model().attribute("owner",testOwner));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+        verify(ownerService,times(1)).findById(any());
+    }
+
+    @Test
+    void updateOwnerFormOwnerNotFound(){
+
+        when(ownerService.findById(2L)).thenReturn(null);
+
+        try{
+            mockMvc.perform(get("/owners/2/edit"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(header().string("Location","/owners/new"));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+        verify(ownerService,times(1)).findById(any());
+    }
+
+    @Test
+    void addOwnerAction(){
+
+        Owner testAddOwner = Owner.builder().id(1L).lastName("lastname").firstName("firstname").build();
+        when(ownerService.save(any())).thenReturn(testAddOwner);
+
+        try{
+            mockMvc.perform(MockMvcRequestBuilders.post("/owners")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("id",""))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(header().string("Location","/owners/1"));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+
+        verify(ownerService,times(1)).save(any());
+
+    }
+
+    @Test
+    void updateOwnerAction(){
+
+        Owner testAddOwner = Owner.builder().id(2L).lastName("lastname").firstName("firstname").build();
+        when(ownerService.save(any())).thenReturn(testAddOwner);
+
+        try{
+            mockMvc.perform(MockMvcRequestBuilders.post("/owners")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("id","2"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(header().string("Location","/owners/2"));
+        } catch(Exception e){
+            fail(e.getMessage());
+        }
+
+        verify(ownerService,times(1)).save(any());
+
+    }
+
 
 }
