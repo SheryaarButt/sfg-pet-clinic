@@ -178,7 +178,7 @@ class OwnerControllerTest {
         when(ownerService.save(any())).thenReturn(testAddOwner);
 
         try{
-            mockMvc.perform(MockMvcRequestBuilders.post("/owners")
+            mockMvc.perform(MockMvcRequestBuilders.post("/owners/new")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .param("id",""))
                     .andExpect(status().is3xxRedirection())
@@ -198,7 +198,7 @@ class OwnerControllerTest {
         when(ownerService.save(any())).thenReturn(testAddOwner);
 
         try{
-            mockMvc.perform(MockMvcRequestBuilders.post("/owners")
+            mockMvc.perform(MockMvcRequestBuilders.post("/owners/2/edit")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .param("id","2"))
                     .andExpect(status().is3xxRedirection())

@@ -4,6 +4,7 @@ import com.sharueigo.sfgpetclinic.model.Owner;
 import com.sharueigo.sfgpetclinic.services.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -67,14 +68,22 @@ public class OwnerController {
         }
     }
 
-    @PostMapping
-    public ModelAndView addOrUpdateOwnerAction(Owner owner){
-        if(owner == null){
+    @PostMapping("/new")
+    public ModelAndView addOrUpdateOwnerAction(@Validated Owner owner, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
             return new ModelAndView("redirect:/owners/new");
         }
         return new ModelAndView("redirect:/owners/" + ownerService.save(owner).getId());
     }
 
-
+    @PostMapping("/{ownerId:[1-9]\\d*}/edit")
+    public ModelAndView addOrUpdateOwnerAction(@PathVariable Long ownerId,
+                                               @Validated Owner owner, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return new ModelAndView("redirect:/owners/new");
+        }
+        owner.setId(ownerId);
+        return new ModelAndView("redirect:/owners/" + ownerService.save(owner).getId());
+    }
 
 }
