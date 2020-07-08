@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Set;
 
-@RequestMapping("/owners/{ownerId:[1-9]\\d*}")
+@RequestMapping("/owners/{ownerId:[1-9]\\d*}/pets")
 @Controller
 public class PetController {
 
@@ -31,7 +31,7 @@ public class PetController {
     }
 
     @InitBinder({"owner","pet"})
-    public void setAllowedFieldsPet(WebDataBinder webDataBinder){
+    public void setAllowedFields(WebDataBinder webDataBinder){
         webDataBinder.setDisallowedFields("id");
     }
 
@@ -45,14 +45,14 @@ public class PetController {
         return ownerService.findById(ownerId);
     }
 
-    @GetMapping("/pets/new")
+    @GetMapping("/new")
     public ModelAndView newPetForm(Owner owner){
         Pet newPet = new Pet();
         owner.addPet(newPet);
         return new ModelAndView("owners/pets/createOrUpdatePetForm").addObject("pet",newPet);
     }
 
-    @PostMapping("/pets/new")
+    @PostMapping("/new")
     public ModelAndView newPetAction(Owner owner, @Validated Pet pet, BindingResult result){
         pet.setOwner(owner);
         if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
@@ -65,12 +65,12 @@ public class PetController {
         return new ModelAndView("redirect:/owners/" + owner.getId());
     }
 
-    @GetMapping("/pets/{petId:[1-9]\\d*}/edit")
+    @GetMapping("/{petId:[1-9]\\d*}/edit")
     public ModelAndView editPetForm(@PathVariable Long petId){
         return new ModelAndView("owners/pets/createOrUpdatePetForm").addObject("pet",petService.findById(petId));
     }
 
-    @PostMapping("/pets/{petId:[1-9]\\d*}/edit")
+    @PostMapping("/{petId:[1-9]\\d*}/edit")
     public ModelAndView editPetAction(Owner owner,@PathVariable Long petId, Pet pet, BindingResult result){
         pet.setId(petId);
         pet.setOwner(owner);
