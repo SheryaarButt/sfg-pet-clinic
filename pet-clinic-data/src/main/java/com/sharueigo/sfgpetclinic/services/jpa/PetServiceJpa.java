@@ -10,10 +10,8 @@ import org.springframework.stereotype.Service;
 @Profile("jpa")
 public class PetServiceJpa extends CrudServiceJpa<Pet> implements PetService {
 
-    private final PetRepository petRepository;
-
     public PetServiceJpa(PetRepository petRepository) {
         super(petRepository);
-        this.petRepository = petRepository;
     }
+
 }

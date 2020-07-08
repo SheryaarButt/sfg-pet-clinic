@@ -1,6 +1,7 @@
 package com.sharueigo.sfgpetclinic.model;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,7 +12,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "pets")
 public class Pet extends BaseEntity{
@@ -28,8 +28,23 @@ public class Pet extends BaseEntity{
                cascade = CascadeType.ALL)
     private Set<Visit> visits = new HashSet<>();
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+
     private String name;
+
+    @Builder
+    public Pet(Long id, PetType petType, Owner owner, Set<Visit> visits,
+               LocalDate birthDate, String name) {
+        super(id);
+        this.petType = petType;
+        this.owner = owner;
+        this.birthDate = birthDate;
+        this.name = name;
+        if(visits != null){
+            this.visits = visits;
+        }
+    }
 
     public void addVisit(Visit visit){
         if(visit != null){
