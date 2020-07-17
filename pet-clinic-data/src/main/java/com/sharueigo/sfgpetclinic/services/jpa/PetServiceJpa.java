@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("jpa")
+@Profile({"jpa","sql"})
 public class PetServiceJpa extends CrudServiceJpa<Pet> implements PetService {
 
     public PetServiceJpa(PetRepository petRepository) {

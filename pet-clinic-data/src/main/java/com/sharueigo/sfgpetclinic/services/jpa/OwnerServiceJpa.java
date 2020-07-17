@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
-@Profile("jpa")
+@Profile({"jpa","sql"})
 public class OwnerServiceJpa extends CrudServiceJpa<Owner> implements OwnerService {
 
     private final OwnerRepository ownerRepository;
