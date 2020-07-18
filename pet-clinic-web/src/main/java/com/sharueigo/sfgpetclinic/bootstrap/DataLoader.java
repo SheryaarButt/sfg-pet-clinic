@@ -3,10 +3,12 @@ package com.sharueigo.sfgpetclinic.bootstrap;
 import com.sharueigo.sfgpetclinic.model.*;
 import com.sharueigo.sfgpetclinic.services.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Profile("jpa")
 @Component
 public class DataLoader implements CommandLineRunner
 {
